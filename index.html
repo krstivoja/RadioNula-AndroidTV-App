@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Android TV App</title>
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    justify-content: center;
+    height: 100vh;
+    background: url(https://radionula.com/static/media/img-hero-desktop-01-classic.0440aa41.jpg) center center;
+    background-size: cover;
+    color: white;
+    font-family: Arial, sans-serif;
+  }
+
+  .overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(32, 21, 0, 0.3);
+    width: 100%;
+    height: 100vh;
+    z-index: -1;
+  }
+
+  button {
+    font-size: 24px;
+    padding: 20px;
+    margin: 10px;
+    cursor: pointer;
+    aspect-ratio: 1/1;
+    width: 20vw;
+    border-radius: 1rem;
+    border: 0;
+    transform: scale(1);
+    transition: transform 0.3s ease-in-out;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    backdrop-filter: blur(0px);
+    position: relative;
+  }
+
+  button:focus {
+    box-shadow: 1px 22px 36px 0px rgba(0,0,0,0.51);
+    -webkit-box-shadow: 1px 22px 36px 0px rgba(0,0,0,0.51);
+    -moz-box-shadow: 1px 22px 36px 0px rgba(0,0,0,0.51);
+    transform: scale(1.2);
+    backdrop-filter: blur(10px);
+    outline: 4px solid wheat;
+    border: 0;
+    z-index: 10;
+}
+
+  #currentTitle {
+    font-size: 40px;
+    font-weight: 800;
+    margin: 0px;
+    line-height: 1;
+    color: white;
+  }
+
+  .buttons{
+    display: flex;
+    gap: 2rem;
+  }
+</style>
+</head>
+<body>
+    <div class="overlay"></div>
+
+    <div id="currentTitle">Select a Channel</div>
+
+    <div class="buttons">
+        <button id="button3">Classics</button>
+        <button id="button2">Organic</button>
+        <button id="button1">Beatz</button>
+    </div>
+
+<audio id="audioPlayer"></audio>
+
+<script>
+    const urls = [
+      'https://strm.radionula.com/lounge',
+      'https://strm.radionula.com/channel2',
+      'https://strm.radionula.com/classics'
+    ];
+    
+    const backgrounds = [
+        'https://radionula.com/static/media/img-hero-desktop-01-classic.0440aa41.jpg',
+        'https://radionula.com/static/media/img-hero-desktop-03-beatz.789b4868.jpg',
+        'https://radionula.com/static/media/img-hero-desktop-02-organic.62b81332.jpg'
+      
+    ];
+  
+    let currentPlaying = null;
+  
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach((button, index) => {
+      button.addEventListener('click', () => togglePlay(index));
+      button.addEventListener('focus', () => {
+        updateTitle(button.textContent);
+        document.body.style.backgroundImage = `url(${backgrounds[index]})`;
+      });
+    });
+  
+    function togglePlay(index) {
+      const audioPlayer = document.getElementById('audioPlayer');
+      const button = buttons[index];
+      if (currentPlaying === index) {
+        audioPlayer.pause();
+        currentPlaying = null;
+        updateTitle("Select a Channel");
+        document.body.style.backgroundImage = ''; // Optionally reset or change to a default background
+      } else {
+        audioPlayer.src = urls[index];
+        audioPlayer.play();
+        currentPlaying = index;
+        updateTitle(button.textContent);
+        document.body.style.backgroundImage = `url(${backgrounds[index]})`;
+      }
+    }
+  
+    function updateTitle(text) {
+      document.getElementById('currentTitle').textContent = text;
+    }
+  
+    // Set initial focus and background
+    buttons[0].focus();
+    document.body.style.backgroundImage = `url(${backgrounds[0]})`;
+  
+  </script>
+</body>
+</html>
